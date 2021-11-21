@@ -1,0 +1,2 @@
+If you need subfunctions to write a complex function, you should define these subfunctions as static to avoid publishing
+them with your library. It would be a good habit to do this in your future projects as well.
