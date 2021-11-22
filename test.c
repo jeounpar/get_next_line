@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include "get_next_line.h"
 
 int main(void)
 {
@@ -8,15 +8,12 @@ int main(void)
 	int len;
 	int chk;
 	char buf[100];
+	char *line;
 	fd = open("./test.txt", O_RDONLY);
-	while (1)
-	{
-		chk = read(fd, buf, 10);
-		if (!chk)
-			break;
-		len += chk;
-	}
+	line = get_next_line(fd);
+	printf("%s\n", line);
 	close(fd);
 	printf("%d\n", len);
+	printf("%d\n", OPEN_MAX);
 	return(0);
 }

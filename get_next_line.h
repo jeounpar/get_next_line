@@ -17,4 +17,10 @@
 # include <stdlib.h>
 # include <limits.h>
 
+int		ft_strchridx(char *s, int c);
+char	*ft_strjoin(char *s1, char *s2);
+void	ft_bzero(void *s, size_t n);
+char	*ft_strncat(char *dest, char *src, size_t nb);
+char	*get_next_line(int fd);
+
 #endif
