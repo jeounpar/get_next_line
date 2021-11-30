@@ -6,17 +6,15 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:10 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/11/22 02:28:12 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/11/27 16:39:48 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
-
 //bzero, memmove - > X, strncpy -> X, strjoin
-const int BUFFER_SIZE = 1000;
 
-static int	free_buff(char *buff[OPEN_MAX])
+static int	free_buff(char **buff, char *line)
 {
 	int	i;
 
@@ -27,37 +25,54 @@ static int	free_buff(char *buff[OPEN_MAX])
 			free(buff[i]);
 		i++;
 	}
+	free(line);
 	return (0);
 }
 
-static int ft_strlen(char *str)
+static void	ft_strncpy(char *dest, char *src, size_t n)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (str[i] != '\0')
-		i++;
-	return (i);
-}
-
-static char	*ft_strndup(char *src, size_t n)
-{
-	char	*tmp;
-	int		size;
-	int		i;
-
-	i = 0;
-	size = ft_strlen(src) + 1;
-	tmp = (char *)malloc(size * sizeof(char));
-	if (tmp == NULL)
-		return (0);
-	while (src[i] != '\0' && i < n)
+	while (i < n)
 	{
-		tmp[i] = src[i];
+		dest[i] = src[i];
 		i++;
 	}
-	tmp[i] = '\0';
-	return (tmp);
+	dest[i] = '\0';
+}
+
+static int	read_line(char *buff, char **line, int fd)
+{
+	char	c;
+	int		i;
+	int		nl_or_eof;
+
+	i = 0;
+	nl_or_eof = 0;
+	while (i < BUFFER_SIZE)
+	{
+		read(fd, &c, 1);
+		if (c == '\n' || c == EOF)
+		{
+			nl_or_eof = 1;
+			break ;
+		}
+		buff[i] = c;
+		i++;
+	}
+	if (line[0][0] == 0)
+		ft_strncpy(line[0], buff, i);
+	else
+	{
+		printf("buff size : %d\n", i);
+		ft_strjoin(line, buff, i);
+		//printf("line : %s\n", line[0]);
+	}
+	if (nl_or_eof == 0)
+		return (ft_bzero(buff, BUFFER_SIZE));
+	else
+		return (-1);
 }
 
 char	*get_next_line(int fd)
@@ -67,19 +82,21 @@ char	*get_next_line(int fd)
 	int			len;
 	int			idx;
 
+	line = malloc(BUFFER_SIZE + 1);
+	if (line == NULL)
+		return (NULL);
+	ft_bzero(line, BUFFER_SIZE + 1);
 	if (buff[fd] == NULL)
 	{
-		buff[fd] = malloc(BUFFER_SIZE + 1);
+		buff[fd] = malloc(BUFFER_SIZE);
 		if (buff[fd] == NULL)
 		{
-			free_buff(&buff[OPEN_MAX]);
+			free_buff(buff, line);
 			return (NULL);
 		}
 	}
-	len = read(fd, buff[fd], BUFFER_SIZE);
-	buff[fd][BUFFER_SIZE] = '\0';
-	idx = ft_strchridx(buff[fd], '\n');
-	line = ft_strndup(buff[fd], idx);
+	while (read_line(buff[fd], &line, fd) != -1)
+		printf("%s\n", line);
 	return (line);
 }
 

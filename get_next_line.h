@@ -17,10 +17,12 @@
 # include <stdlib.h>
 # include <limits.h>
 
+#define OPEN_MAX 9999
+#define BUFFER_SIZE 20
+
 int		ft_strchridx(char *s, int c);
-char	*ft_strjoin(char *s1, char *s2);
-void	ft_bzero(void *s, size_t n);
-char	*ft_strncat(char *dest, char *src, size_t nb);
+int		ft_bzero(void *s, size_t n);
+char	*ft_strjoin(char **line, char *buff, int len);
 char	*get_next_line(int fd);
 
 #endif

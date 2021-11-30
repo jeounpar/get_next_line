@@ -11,27 +11,22 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-char	*ft_strncat(char *dest, char *src, size_t nb)
+void	*ft_memmove(char *dest, char *src, int n)
 {
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	while (dest[i] != '\0')
-		i++;
-	j = 0;
-	while (src[j] != '\0' && j < nb)
-	{
-		dest[i] = src[j];
-		i++;
-		j++;
-	}
-	dest[i] = '\0';
+	if (dest == src || n == 0)
+		return (dest);
+	if (dest < src)
+		while (n--)
+			*dest++ = *src++;
+	else
+		while (n--)
+			*(dest + n) = *(src + n);
 	return (dest);
 }
 
-void	ft_bzero(void *s, size_t n)
+int	ft_bzero(void *s, size_t n)
 {
 	size_t			i;
 	unsigned char	*str;
@@ -43,70 +38,45 @@ void	ft_bzero(void *s, size_t n)
 		str[i] = 0;
 		i++;
 	}
+	return (1);
 }
 
-int	ft_strchridx(char *s, int c)
-{
-	unsigned char	cc;
-	char			*tmp;
-	int				i;
-
-	i = 0;
-	tmp = (char *)s;
-	cc = (unsigned char)c;
-	while (tmp[i] != '\0')
-	{
-		if (tmp[i] == cc)
-			return (i);
-		i++;
-	}
-	if (tmp[i] == cc)
-		return (i);
-	return (-1);
-}
-
-static void	join_str(char *str, char *s1, char *s2)
+static void	join_str(char *str, char *line, char *buff, int size)
 {
 	int		i;
 	int		j;
-	char	*s1_str;
-	char	*s2_str;
 
-	s1_str = (char *)s1;
-	s2_str = (char *)s2;
 	i = 0;
-	while (s1_str[i] != '\0')
+	while (line[i] != '\0')
 	{
-		str[i] = s1_str[i];
+		str[i] = line[i];
 		i++;
 	}
 	j = 0;
-	while (s2_str[j] != '\0')
+	while (j < size)
 	{
-		str[i] = s2_str[j];
+		str[i] = buff[j];
 		i++;
 		j++;
 	}
 	str[i] = '\0';
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin(char **line, char *buff, int size)
 {
 	int		len;
 	int		i;
-	int		j;
 	char	*str;
 
 	i = 0;
-	while (s1[i] != '\0')
+	while (line[0][i] != '\0')
 		i++;
-	j = 0;
-	while (s2[j] != '\0')
-		j++;
-	len = i + j + 1;
+	len = i + size + 1;
 	str = (char *)malloc(len * sizeof(char));
 	if (str == NULL)
 		return (NULL);
-	join_str(str, s1, s2);
+	join_str(str, line[0], buff, size);
+	free(line[0]);
+	*line = str;
 	return (str);
 }
