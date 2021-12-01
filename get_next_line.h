@@ -6,7 +6,7 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:13 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/11/22 01:47:08 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 12:54:00 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
-
-#define OPEN_MAX 9999
-#define BUFFER_SIZE 20
 
 int		ft_strchridx(char *s, int c);
 int		ft_bzero(void *s, size_t n);

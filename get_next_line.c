@@ -6,7 +6,7 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:10 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/11/27 16:39:48 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 13:58:54 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,30 +46,37 @@ static int	read_line(char *buff, char **line, int fd)
 {
 	char	c;
 	int		i;
-	int		nl_or_eof;
+	int		eof;
+	int		nl;
 
 	i = 0;
-	nl_or_eof = 0;
+	eof = 0;
+	nl = 0;
 	while (i < BUFFER_SIZE)
 	{
-		read(fd, &c, 1);
-		if (c == '\n' || c == EOF)
+		if (!read(fd, &c, 1))
 		{
-			nl_or_eof = 1;
+			eof = 1;
+			break ;
+		}
+		if (c == '\n')
+		{
+			nl = 1;
 			break ;
 		}
 		buff[i] = c;
 		i++;
 	}
+	if (eof == 1)
+	{
+		line[0] = NULL;
+		return (-1);
+	}
 	if (line[0][0] == 0)
 		ft_strncpy(line[0], buff, i);
 	else
-	{
-		printf("buff size : %d\n", i);
 		ft_strjoin(line, buff, i);
-		//printf("line : %s\n", line[0]);
-	}
-	if (nl_or_eof == 0)
+	if (nl == 0)
 		return (ft_bzero(buff, BUFFER_SIZE));
 	else
 		return (-1);
@@ -79,8 +86,6 @@ char	*get_next_line(int fd)
 {
 	static char	*buff[OPEN_MAX];
 	char		*line;
-	int			len;
-	int			idx;
 
 	line = malloc(BUFFER_SIZE + 1);
 	if (line == NULL)
@@ -96,15 +101,7 @@ char	*get_next_line(int fd)
 		}
 	}
 	while (read_line(buff[fd], &line, fd) != -1)
-		printf("%s\n", line);
+		;
 	return (line);
 }
 
-// int	get_int(int num)
-// {
-// 	static int n = 0;
-
-// 	n++;
-// 	num = n;
-// 	return (num);
-// }
