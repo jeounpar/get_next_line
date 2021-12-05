@@ -6,7 +6,7 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:10 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/12/01 13:58:54 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/05 17:49:36 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,79 +29,57 @@ static int	free_buff(char **buff, char *line)
 	return (0);
 }
 
-static void	ft_strncpy(char *dest, char *src, size_t n)
+static int	find_nl_idx(char *buff)
 {
-	size_t	i;
+	int	idx;
 
-	i = 0;
-	while (i < n)
+	idx = 0;
+	while (buff[idx] != '\0')
 	{
-		dest[i] = src[i];
-		i++;
+		if (buff[idx] == '\n')
+			return (idx);
+		idx++;
 	}
-	dest[i] = '\0';
+	return (-1);
 }
 
-static int	read_line(char *buff, char **line, int fd)
+char	*cut_buff(char **buff, char **line, int idx)
 {
-	char	c;
-	int		i;
-	int		eof;
-	int		nl;
+	char	*tmp;
 
-	i = 0;
-	eof = 0;
-	nl = 0;
-	while (i < BUFFER_SIZE)
-	{
-		if (!read(fd, &c, 1))
-		{
-			eof = 1;
-			break ;
-		}
-		if (c == '\n')
-		{
-			nl = 1;
-			break ;
-		}
-		buff[i] = c;
-		i++;
-	}
-	if (eof == 1)
-	{
-		line[0] = NULL;
-		return (-1);
-	}
-	if (line[0][0] == 0)
-		ft_strncpy(line[0], buff, i);
-	else
-		ft_strjoin(line, buff, i);
-	if (nl == 0)
-		return (ft_bzero(buff, BUFFER_SIZE));
-	else
-		return (-1);
+	buff[0][idx] = '\0';
+	*line = ft_strdup(buff[0], 0);
+	//printf("line = %s\n", *line);
+	tmp = ft_strdup(buff[0], idx + 1);
+	//printf("\ntmp = %s\n\n", tmp);
+	free(buff[0]);
+	buff[0] = tmp;
+	return (*line);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*buff[OPEN_MAX];
 	char		*line;
+	char		tmp_buff[BUFFER_SIZE + 1];
+	int			t_size;
+	int			nl_idx;
 
-	line = malloc(BUFFER_SIZE + 1);
-	if (line == NULL)
+	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE < 1)
 		return (NULL);
-	ft_bzero(line, BUFFER_SIZE + 1);
-	if (buff[fd] == NULL)
+	nl_idx = -2;
+	while (nl_idx < 0)
 	{
-		buff[fd] = malloc(BUFFER_SIZE);
-		if (buff[fd] == NULL)
-		{
-			free_buff(buff, line);
-			return (NULL);
-		}
+		t_size = read(fd, tmp_buff, BUFFER_SIZE);
+		if (t_size < 1)
+			break ;
+		tmp_buff[t_size] = '\0';
+		buff[fd] = ft_strjoin(buff[fd], tmp_buff);
+		nl_idx = find_nl_idx(buff[fd]);
+		if (nl_idx >= 0)
+			return (cut_buff(&buff[fd], &line, nl_idx));
 	}
-	while (read_line(buff[fd], &line, fd) != -1)
-		;
-	return (line);
+	if (t_size < 0)
+		return (NULL);
 }
 
