@@ -13,6 +13,11 @@ int main(void)
 	printf("final = %s\n", get_next_line(fd));
 	printf("final = %s\n", get_next_line(fd));
 	printf("final = %s\n", get_next_line(fd));
+	printf("final = %s\n", get_next_line(fd));
+	printf("final = %s\n", get_next_line(fd));
+	printf("final = %s\n", get_next_line(fd));
+	printf("final = %s\n", get_next_line(fd));
+	printf("final = %s\n", get_next_line(fd));
 	close(fd);
 	return(0);
 }

@@ -6,7 +6,7 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:10 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/12/05 22:48:16 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/05 23:07:52 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,26 @@
 static char	*read_file(char *buff, int fd)
 {
 	int		read_size;
-	char	tmp[BUFFER_SIZE + 1];
+	char	*tmp;
 
 	read_size = 42;
+	tmp = (char *)malloc(BUFFER_SIZE + 1);
+	if (tmp == NULL)
+		return (NULL);
 	while (read_size > 0)
 	{
 		read_size = read(fd, tmp, BUFFER_SIZE);
 		if (read_size == -1)
+		{
+			free(tmp);
 			return (NULL);
+		}
 		tmp[read_size] = '\0';
 		buff = ft_strjoin(buff, tmp);
 		if (ft_strchr(buff, '\n') != 0)
 			break ;
 	}
+	free(tmp);
 	return (buff);
 }
 
