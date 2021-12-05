@@ -6,102 +6,85 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:17 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/12/05 19:46:54 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/05 22:46:41 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-#include <stdio.h>
+#include <stdlib.h>
 
 size_t	ft_strlen(const char *str)
 {
 	size_t	len;
-	
+
 	len = 0;
 	while (str[len] != '\0')
 		len++;
 	return (len);
 }
 
-char	*ft_strdup(char *s, int idx)
+char	*ft_strdup(char *s)
 {
-	char *str;
-	int size;
-	int i;
+	char	*str;
+	int		size;
+	int		i;
 
 	size = ft_strlen(s) + 1;
-	printf("buff = %s\n", s);
-	printf("size = %d\n", size);
 	str = (char *)malloc(size * sizeof(char));
 	if (str == NULL)
-		return (0);
+		return (NULL);
 	i = 0;
-	while (s[idx] != '\0')
+	while (s[i] != '\0')
 	{
-		str[i] = s[idx];
-		idx++;
+		str[i] = s[i];
 		i++;
 	}
 	str[i] = '\0';
 	return (str);
 }
 
-size_t	ft_strlcat(char *dest, const char *src, size_t size)
-{
-	size_t	i;
-	size_t	idx;
-
-	i = 0;
-	idx = 0;
-	while (dest[i] && i < size)
-		i++;
-	while (src[idx] && (i + idx + 1) < size)
-	{
-		dest[i + idx] = src[idx];
-		idx++;
-	}
-	if (i < size)
-		dest[i + idx] = '\0';
-	return (i + ft_strlen(src));
-}
-
-size_t	ft_strlcpy(char *dest, const char *src, size_t size)
-{
-	size_t	i;
-	size_t	cnt;
-
-	i = 0;
-	cnt = 0;
-	while (src[cnt] != '\0')
-		cnt++;
-	if (size != 0)
-	{
-		while (src[i] != '\0' && i < (size - 1))
-		{
-			dest[i] = src[i];
-			i++;
-		}
-		dest[i] = '\0';
-	}
-	return (cnt);
-}
-
-
-char	*ft_strjoin(char *buff, char *s2)
+char	*ft_strchr(const char *s, int c)
 {
 	char	*str;
-	int		buff_len;
-	int		s2_len;
+	int		i;
 
-	if (buff == NULL)
-		buff = ft_strdup("", 0);
-	buff_len = ft_strlen(buff);
-	s2_len = ft_strlen(s2);
-	str = (char *)malloc((buff_len + s2_len + 1) * sizeof(char));
+	i = 0;
+	str = (char *)s;
+	while (str[i] != '\0')
+	{
+		if (str[i] == c)
+			return (&str[i]);
+		i++;
+	}
+	if (str[i] == c)
+		return (&str[i]);
+	return (0);
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	char	*str;
+	int		i;
+	int		j;
+
+	if (s1 == NULL)
+		s1 = ft_strdup("");
+	str = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
 	if (str == NULL)
 		return (NULL);
-	ft_strlcpy(str, buff, buff_len + 1);
-	free(buff);
-	ft_strlcat(str, s2, buff_len + s2_len + 1);
+	i = 0;
+	while (s1[i] != '\0')
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j] != '\0')
+	{
+		str[i] = s2[j];
+		i++;
+		j++;
+	}
+	free(s1);
+	str[i] = '\0';
 	return (str);
 }

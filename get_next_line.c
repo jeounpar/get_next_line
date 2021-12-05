@@ -6,94 +6,113 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:10 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/12/05 19:47:09 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/05 22:48:16 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
-//bzero, memmove - > X, strncpy -> X, strjoin
 
-static int	find_nl_idx(char *buff)
+static char	*read_file(char *buff, int fd)
 {
-	int	idx;
+	int		read_size;
+	char	tmp[BUFFER_SIZE + 1];
+
+	read_size = 42;
+	while (read_size > 0)
+	{
+		read_size = read(fd, tmp, BUFFER_SIZE);
+		if (read_size == -1)
+			return (NULL);
+		tmp[read_size] = '\0';
+		buff = ft_strjoin(buff, tmp);
+		if (ft_strchr(buff, '\n') != 0)
+			break ;
+	}
+	return (buff);
+}
+
+static char	*get_next_buff(char *buff)
+{
+	char	*next_buff;
+	int		idx;
+	int		i;
 
 	idx = 0;
-	while (buff[idx] != '\0')
-	{
-		if (buff[idx] == '\n')
-			return (idx);
+	while (buff[idx] != '\0' && buff[idx] != '\n')
 		idx++;
-	}
-	return (-1);
-}
-
-char	*cut_buff(char **buff, int idx)
-{
-	char	*tmp;
-	char	*line;
-	
-	buff[0][idx] = '\0';
-	line = ft_strdup(buff[0], 0);
-	printf("line = %s\n", line);
-	// if ((ft_strlen(buff[0]) + idx + 1) == 0)
-	// {
-	// 	free(buff[0]);
-	// 	buff[0] = NULL;
-	// 	return (NULL);
-	// }
-	tmp = ft_strdup(buff[0], idx + 1);
-	free(buff[0]);
-	buff[0] = tmp;
-	printf("[buff]\n---------\n%s\n---------\n", buff[0]);
-	return (line);
-}
-
-char	*handling_exep(char **buff, int t_size)
-{
-	int		idx;
-	char	*line;
-	
-	if (t_size == -1)
+	if (buff[idx] == '\0')
+	{
+		free(buff);
 		return (NULL);
-	idx = find_nl_idx(buff[0]);
-	if (buff[0] != NULL && idx >= 0)
-	{
-		printf("2\n");
-		printf("idx : %d\n", idx);
-		return (cut_buff(buff, idx));
 	}
-	else if (buff[0] != NULL)
+	next_buff = malloc((ft_strlen(buff) - idx + 1));
+	idx++;
+	i = 0;
+	while (buff[idx + i])
 	{
-		line = ft_strdup(buff[0], 0);
-		free(buff[0]);
-		buff[0] = NULL;
-		return (line);
+		next_buff[i] = buff[idx + i];
+		i++;
 	}
-	line = ft_strdup("", 0);
+	next_buff[i] = '\0';
+	free(buff);
+	return (next_buff);
+}
+
+static void	new_line_two(char *buff, char **line)
+{
+	int	i;
+
+	i = 0;
+	while (buff[i] && buff[i] != '\n')
+	{
+		line[0][i] = buff[i];
+		i++;
+	}
+	if (buff[i] == '\n')
+	{
+		line[0][i] = '\n';
+		i++;
+	}
+	line[0][i] = '\0';
+}
+
+static char	*new_line(char *buff)
+{
+	char	*line;
+	int		i;
+
+	i = 0;
+	while (buff[i] != '\0' && buff[i] != '\n')
+		i++;
+	if (buff[i] == '\n')
+		line = (char *)malloc((i + 2) * sizeof(char));
+	else
+		line = (char *)malloc((i + 1) * sizeof(char));
+	if (line == NULL)
+		return (NULL);
+	new_line_two(buff, &line);
 	return (line);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*buff[OPEN_MAX];
-	char		tmp_buff[BUFFER_SIZE + 1];
-	int			t_size;
-	int			nl_idx;
+	char		*line;
 
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE < 1)
 		return (NULL);
-	t_size = read(fd, tmp_buff, BUFFER_SIZE);
-	while (t_size > 0)
+	buff[fd] = read_file(buff[fd], fd);
+	if (buff[fd] == NULL)
+		return (NULL);
+	if (buff[fd][0] == '\0')
 	{
-		tmp_buff[t_size] = '\0';
-		buff[fd] = ft_strjoin(buff[fd], tmp_buff);
-		nl_idx = find_nl_idx(buff[fd]);
-		if (nl_idx >= 0)
-			return (cut_buff(&buff[fd], nl_idx));
-		t_size = read(fd, tmp_buff, BUFFER_SIZE);
+		free(buff[fd]);
+		buff[fd] = NULL;
+		return (NULL);
 	}
-	printf("[buff]\n---------\n%s\n---------\n", buff[fd]);
-	return (handling_exep(&buff[fd], t_size));
+	line = new_line(buff[fd]);
+	if (line == NULL)
+		return (NULL);
+	buff[fd] = get_next_buff(buff[fd]);
+	return (line);
 }
-
