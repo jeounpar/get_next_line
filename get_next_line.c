@@ -6,7 +6,7 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:10 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/12/05 17:49:36 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/05 18:29:18 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,34 @@ char	*cut_buff(char **buff, char **line, int idx)
 
 	buff[0][idx] = '\0';
 	*line = ft_strdup(buff[0], 0);
-	//printf("line = %s\n", *line);
+	if ((ft_strlen(buff[0]) + idx + 1) == 0)
+	{
+		free(buff[0]);
+		buff[0] = NULL;
+		return (NULL);
+	}
 	tmp = ft_strdup(buff[0], idx + 1);
-	//printf("\ntmp = %s\n\n", tmp);
 	free(buff[0]);
 	buff[0] = tmp;
+	return (*line);
+}
+
+char	*handling_exep(char **buff, char **line, int t_size)
+{
+	int	idx;
+	
+	if (t_size < 0)
+		return (NULL);
+	idx = find_nl_idx(buff[0]);
+	if (buff[0] != NULL && idx >= 0)
+		return (cut_buff(buff, line, idx));
+	else if (buff[0] != NULL)
+	{
+		*line = buff[0];
+		buff[0] = NULL;
+		return (*line);
+	}
+	*line = ft_strdup("", 0);
 	return (*line);
 }
 
@@ -79,7 +102,6 @@ char	*get_next_line(int fd)
 		if (nl_idx >= 0)
 			return (cut_buff(&buff[fd], &line, nl_idx));
 	}
-	if (t_size < 0)
-		return (NULL);
+	return (handling_exep(&buff[fd], &line, nl_idx));
 }
 

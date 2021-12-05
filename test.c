@@ -10,6 +10,13 @@ int main(void)
 	int len;
 	int chk;
 	char *line;
+	char *s;
+
+	s = malloc(10);
+	//free(s[1]);
+	printf("%s\n", s);
+	if (s == NULL)
+		printf("NULL\n");
 
 	fd = open("./test.txt", O_RDONLY);
 	printf("final = %s\n", get_next_line(fd));
