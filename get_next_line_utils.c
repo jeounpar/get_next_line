@@ -6,7 +6,7 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:17 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/12/05 17:43:07 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/05 19:46:54 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ char	*ft_strdup(char *s, int idx)
 	int i;
 
 	size = ft_strlen(s) + 1;
+	printf("buff = %s\n", s);
+	printf("size = %d\n", size);
 	str = (char *)malloc(size * sizeof(char));
 	if (str == NULL)
 		return (0);

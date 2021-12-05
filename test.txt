@@ -1,3 +1,7 @@
-111111111122222222223333333
-If you need subfunctions to write a complex function, you should define these subfunctions as static to avoid publishing
-them with your library. It would be a good habit to do this in your future projects as well.
+1111111111
+2222222222
+3333333333
+4444444444
+5555555555
+6666666666
+7777777777

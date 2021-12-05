@@ -6,7 +6,7 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:13 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/12/05 17:37:01 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/05 19:13:20 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <stdlib.h>
 
 #define OPEN_MAX 1024
-#define BUFFER_SIZE 10
+#define BUFFER_SIZE 2000
 
 size_t	ft_strlen(const char *str);
 char	*ft_strdup(char *s, int n);
