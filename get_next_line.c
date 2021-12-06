@@ -6,7 +6,7 @@
 /*   By: jeounpar <jeounpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 01:30:10 by jeounpar          #+#    #+#             */
-/*   Updated: 2021/12/06 15:49:51 by jeounpar         ###   ########.fr       */
+/*   Updated: 2021/12/06 16:29:33 by jeounpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static char	*get_next_buff(char *buff, int cut_idx)
 	if (buff[cut_idx] == '\0')
 	{
 		free(buff);
+		buff = NULL;
 		return (NULL);
 	}
 	next_buff = malloc((ft_strlen(buff) - cut_idx + 1));
@@ -60,6 +61,7 @@ static char	*get_next_buff(char *buff, int cut_idx)
 	}
 	next_buff[i] = '\0';
 	free(buff);
+	buff = NULL;
 	return (next_buff);
 }
 
